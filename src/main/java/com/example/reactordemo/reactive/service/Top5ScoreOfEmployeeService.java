@@ -1,6 +1,6 @@
 package com.example.reactordemo.reactive.service;
 
-import lombok.Data;
+import com.example.reactordemo.entity.Review;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -9,15 +9,15 @@ import java.util.Comparator;
 import java.util.Map;
 
 @Service
-public class Top5ScoreOfTeacherService {
+public class Top5ScoreOfEmployeeService {
 
-    private Map<String, Integer> selfScoreWithId = Map.of("1", 1, "2", 2, "3", 3);
-    private Map<String, Integer> otherScoreWithId = Map.of("1", 1, "2", 2, "3", 3);
+    private final Map<String, Integer> selfScoreWithId = Map.of("1", 1, "2", 2, "3", 3);
+    private final Map<String, Integer> otherScoreWithId = Map.of("1", 1, "2", 2, "3", 3);
 
-    public Flux<String> getTop5ScoreOfTeacher() {
-        Flux<String> teacherIds = getAllTeacherIds();
+    public Flux<String> getTop5ScoreOfEmployee() {
+        Flux<String> employeeIds = getAllEmployeeIds();
 
-        Flux<Review> reviewFlux = teacherIds.flatMap(id -> {
+        Flux<Review> reviewFlux = employeeIds.flatMap(id -> {
             Mono<Integer> selfAssessment = getSelfAssessment(id);
             Mono<Integer> othersAssessment = getOthersAssessment(id);
 
@@ -42,19 +42,9 @@ public class Top5ScoreOfTeacherService {
         return Mono.just(selfScoreWithId.getOrDefault(id, 0));
     }
 
-    private Flux<String> getAllTeacherIds() {
+    private Flux<String> getAllEmployeeIds() {
         return Flux.just("1", "2", "3",
                 "4", "5", "6", "7", "8");
     }
 
-    @Data
-    private static class Review {
-        private final String id;
-        private final double grade;
-
-        public Review(String id, double grade) {
-            this.id = id;
-            this.grade = grade;
-        }
-    }
 }

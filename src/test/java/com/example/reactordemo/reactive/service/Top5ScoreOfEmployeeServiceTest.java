@@ -9,11 +9,11 @@ import reactor.core.scheduler.Schedulers;
 class Top5ScoreOfEmployeeServiceTest {
 
     @Autowired
-    private Top5ScoreOfTeacherService top5ScoreOfTeacherService;
+    private Top5ScoreOfEmployeeService top5ScoreOfEmployeeService;
 
     @Test
-    void return_top5_score_of_teacher_when_use_flux() {
-        top5ScoreOfTeacherService.getTop5ScoreOfTeacher()
+    void return_top5_score_of_employee_when_use_flux() {
+        top5ScoreOfEmployeeService.getTop5ScoreOfEmployee()
                 .subscribeOn(Schedulers.boundedElastic())
                 .log()
                 .subscribe(System.out::println);
