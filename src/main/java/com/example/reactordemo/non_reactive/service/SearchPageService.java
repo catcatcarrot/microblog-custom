@@ -8,6 +8,7 @@ import com.example.reactordemo.vo.SearchInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,9 +37,33 @@ public class SearchPageService {
                 .hotInfos(hotInfos.stream()
                         .filter(i -> !isTeenager || !i.getSensitive())
                         .limit(5)
+                        .map(HotInfo::getContent)
                         .collect(Collectors.toList())
                 )
-                .recommendedInfos(recommendedInfos)
+                .recommendedInfos(recommendedInfos.stream()
+                        .filter(i -> !isTeenager || !i.getSensitive())
+                        .map(RecommendedInfo::getContent)
+                        .collect(Collectors.toList()))
                 .build();
+    }
+
+    public SearchInfo getSearchInfoByCompletableFuture(boolean isTeenager) throws ExecutionException, InterruptedException {
+        CompletableFuture<List<String>> hotInfosCompletableFuture = CompletableFuture.supplyAsync(hotInfoRepository::getHotInfos)
+                .thenApplyAsync(item -> item.stream()
+                .filter(i -> !isTeenager || !i.getSensitive())
+                .limit(5)
+                .map(HotInfo::getContent)
+                .collect(Collectors.toList()));
+        CompletableFuture<List<String>> recommendedInfosCompletableFuture = CompletableFuture.supplyAsync(recommendedInfoRepository::getRecommendedInfos)
+                .thenApplyAsync(item -> item.stream()
+                        .filter(i -> !isTeenager || !i.getSensitive())
+                        .map(RecommendedInfo::getContent)
+                        .collect(Collectors.toList()));
+        return hotInfosCompletableFuture.
+                thenCombineAsync(
+                        recommendedInfosCompletableFuture,
+                        (hot, rec) -> SearchInfo.builder().hotInfos(hot).recommendedInfos(rec).build()
+                )
+                .get();
     }
 }

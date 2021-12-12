@@ -14,8 +14,16 @@ class SearchPageServiceTest {
     private SearchPageService service;
 
     @Test
-    void return_search_page() throws ExecutionException, InterruptedException {
+    void return_search_page_by_future() throws ExecutionException, InterruptedException {
         SearchInfo searchInfo = service.getSearchInfoByFuture(false);
+
+        System.out.println(searchInfo.getHotInfos());
+        System.out.println(searchInfo.getRecommendedInfos());
+    }
+
+    @Test
+    void return_search_page_by_completable_future() throws ExecutionException, InterruptedException {
+        SearchInfo searchInfo = service.getSearchInfoByCompletableFuture(false);
 
         System.out.println(searchInfo.getHotInfos());
         System.out.println(searchInfo.getRecommendedInfos());

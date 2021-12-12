@@ -1,7 +1,5 @@
 package com.example.reactordemo.vo;
 
-import com.example.reactordemo.entity.HotInfo;
-import com.example.reactordemo.entity.RecommendedInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchInfo {
 
-    private List<HotInfo> hotInfos;
-    private List<RecommendedInfo> recommendedInfos;
+    private List<String> hotInfos;
+    private List<String> recommendedInfos;
 }
