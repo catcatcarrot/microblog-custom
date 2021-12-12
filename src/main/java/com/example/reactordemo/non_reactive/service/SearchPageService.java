@@ -1,4 +1,4 @@
-package com.example.reactordemo.non_reactive.thread.service;
+package com.example.reactordemo.non_reactive.service;
 
 import com.example.reactordemo.entity.HotInfo;
 import com.example.reactordemo.entity.RecommendedInfo;
@@ -25,7 +25,7 @@ public class SearchPageService {
         this.recommendedInfoRepository = recommendedInfoRepository;
     }
 
-    public SearchInfo getSearchInfo(boolean isTeenager) throws ExecutionException, InterruptedException {
+    public SearchInfo getSearchInfoByFuture(boolean isTeenager) throws ExecutionException, InterruptedException {
         ExecutorService executorService = Executors.newFixedThreadPool(5);
         Future<List<HotInfo>> hotInfoFuture = executorService.submit(hotInfoRepository::getHotInfos);
         Future<List<RecommendedInfo>> recommendedInfoFuture = executorService.submit(recommendedInfoRepository::getRecommendedInfos);

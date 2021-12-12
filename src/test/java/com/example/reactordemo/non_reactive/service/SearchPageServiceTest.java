@@ -1,7 +1,6 @@
-package com.example.reactordemo.non_reactive.thread.service;
+package com.example.reactordemo.non_reactive.service;
 
 import com.example.reactordemo.vo.SearchInfo;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +15,7 @@ class SearchPageServiceTest {
 
     @Test
     void return_search_page() throws ExecutionException, InterruptedException {
-        SearchInfo searchInfo = service.getSearchInfo(false);
+        SearchInfo searchInfo = service.getSearchInfoByFuture(false);
 
         System.out.println(searchInfo.getHotInfos());
         System.out.println(searchInfo.getRecommendedInfos());
