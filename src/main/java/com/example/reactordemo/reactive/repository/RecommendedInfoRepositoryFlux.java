@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 @Repository
-public class RecommendedInfoRepository {
+public class RecommendedInfoRepositoryFlux {
 
     public Flux<RecommendedInfo> getRecommendedInfos() {
         return Flux.just(

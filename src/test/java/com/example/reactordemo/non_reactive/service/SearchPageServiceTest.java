@@ -28,4 +28,5 @@ class SearchPageServiceTest {
         System.out.println(searchInfo.getHotInfos());
         System.out.println(searchInfo.getRecommendedInfos());
     }
+
 }
