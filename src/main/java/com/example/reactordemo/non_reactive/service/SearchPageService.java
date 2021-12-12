@@ -34,36 +34,37 @@ public class SearchPageService {
         List<HotInfo> hotInfos = hotInfoFuture.get();
         List<RecommendedInfo> recommendedInfos = recommendedInfoFuture.get();
         return SearchInfo.builder()
-                .hotInfos(hotInfos.stream()
-                        .filter(i -> !isTeenager || !i.getSensitive())
-                        .limit(5)
-                        .map(HotInfo::getContent)
-                        .collect(Collectors.toList())
+                .hotInfos(getHotInfosContent(isTeenager, hotInfos)
                 )
-                .recommendedInfos(recommendedInfos.stream()
-                        .filter(i -> !isTeenager || !i.getSensitive())
-                        .map(RecommendedInfo::getContent)
-                        .collect(Collectors.toList()))
+                .recommendedInfos(getRecommendedInfosContent(isTeenager, recommendedInfos))
                 .build();
     }
 
     public SearchInfo getSearchInfoByCompletableFuture(boolean isTeenager) throws ExecutionException, InterruptedException {
         CompletableFuture<List<String>> hotInfosCompletableFuture = CompletableFuture.supplyAsync(hotInfoRepository::getHotInfos)
-                .thenApplyAsync(item -> item.stream()
-                .filter(i -> !isTeenager || !i.getSensitive())
-                .limit(5)
-                .map(HotInfo::getContent)
-                .collect(Collectors.toList()));
+                .thenApplyAsync(item -> getHotInfosContent(isTeenager, item));
         CompletableFuture<List<String>> recommendedInfosCompletableFuture = CompletableFuture.supplyAsync(recommendedInfoRepository::getRecommendedInfos)
-                .thenApplyAsync(item -> item.stream()
-                        .filter(i -> !isTeenager || !i.getSensitive())
-                        .map(RecommendedInfo::getContent)
-                        .collect(Collectors.toList()));
+                .thenApplyAsync(item -> getRecommendedInfosContent(isTeenager, item));
         return hotInfosCompletableFuture.
                 thenCombineAsync(
                         recommendedInfosCompletableFuture,
                         (hot, rec) -> SearchInfo.builder().hotInfos(hot).recommendedInfos(rec).build()
                 )
                 .get();
+    }
+
+    private List<String> getRecommendedInfosContent(boolean isTeenager, List<RecommendedInfo> recommendedInfos) {
+        return recommendedInfos.stream()
+                .filter(i -> !isTeenager || !i.getSensitive())
+                .map(RecommendedInfo::getContent)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getHotInfosContent(boolean isTeenager, List<HotInfo> hotInfos) {
+        return hotInfos.stream()
+                .filter(i -> !isTeenager || !i.getSensitive())
+                .limit(5)
+                .map(HotInfo::getContent)
+                .collect(Collectors.toList());
     }
 }
