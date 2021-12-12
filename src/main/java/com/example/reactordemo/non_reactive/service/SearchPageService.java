@@ -34,8 +34,7 @@ public class SearchPageService {
         List<HotInfo> hotInfos = hotInfoFuture.get();
         List<RecommendedInfo> recommendedInfos = recommendedInfoFuture.get();
         return SearchInfo.builder()
-                .hotInfos(getHotInfosContent(isTeenager, hotInfos)
-                )
+                .hotInfos(getHotInfosContent(isTeenager, hotInfos))
                 .recommendedInfos(getRecommendedInfosContent(isTeenager, recommendedInfos))
                 .build();
     }
@@ -45,6 +44,7 @@ public class SearchPageService {
                 .thenApplyAsync(item -> getHotInfosContent(isTeenager, item));
         CompletableFuture<List<String>> recommendedInfosCompletableFuture = CompletableFuture.supplyAsync(recommendedInfoRepository::getRecommendedInfos)
                 .thenApplyAsync(item -> getRecommendedInfosContent(isTeenager, item));
+
         return hotInfosCompletableFuture.
                 thenCombineAsync(
                         recommendedInfosCompletableFuture,
